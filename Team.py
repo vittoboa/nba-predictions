@@ -21,10 +21,10 @@ class Team:
             self.reset()
     
     def get_win_percentage(self):
-        return self.wins / self.matches
+        return round(self.wins / self.matches, 3)
     
     def get_avg_points(self):
-        return self.points / self.matches
+        return round(self.points / self.matches)
 
     def update(self, points, points_opponents):
         is_winner = points > points_opponents

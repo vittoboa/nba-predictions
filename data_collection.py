@@ -8,6 +8,9 @@ TEAMS_DATA = []
 MATCHES_DATA = pd.DataFrame()
 
 
+def save_to_file(file_name):
+    MATCHES_DATA.to_csv(file_name, index=False)
+
 def add_digits(num, digits):
     num_digits = sum(1 for _ in str(num))
     return ''.join('0' for _ in range(digits - num_digits)) + str(num)
@@ -76,7 +79,7 @@ def update_match(home_id, away_id, winner):
     global MATCHES_DATA
     home, away = get_team(home_id), get_team(away_id)
     home_data = [home.get_win_percentage(), home.get_avg_points(), home.plus_minus]
-    away_data = [away.get_win_percentage, away.get_avg_points(), away.plus_minus]
+    away_data = [away.get_win_percentage(), away.get_avg_points(), away.plus_minus]
     home_and_away = home_data + away_data
     parameters = ["home win percentage", "home avg points", "home plus minus", 
                 "away win percentage", "away avg points", "away plus minus",
@@ -101,6 +104,8 @@ def retrive_data(game):
     update_match(home_team_id, away_team_id, winner)
 
 if __name__ == '__main__':
-    for i, game_id in enumerate(get_games_id()):
+    for game_id in get_games_id():
         game = get_game(game_id)
         retrive_data(game)
+
+    save_to_file("matches.csv")

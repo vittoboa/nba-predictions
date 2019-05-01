@@ -1,3 +1,10 @@
+import collections
+
+
+def get_avg(sum, n):
+    return sum / n
+
+
 class Team:
     def __init__(self, id, season):
         self.id = id
@@ -8,7 +15,8 @@ class Team:
         self.matches = 0
         self.wins = 0
         self.points = 0
-        self.plus_minus = 0
+        self.last_5_wins = collections.deque(maxlen=5)
+        self.last_5_points = collections.deque(maxlen=5)
 
     @property
     def season(self):
@@ -21,15 +29,21 @@ class Team:
             self.reset()
     
     def get_win_percentage(self):
-        return round(self.wins / self.matches, 3)
+        return 0 if self.matches == 0 else round(get_avg(self.wins, self.matches), 3)
     
     def get_avg_points(self):
-        return round(self.points / self.matches)
+        return 0 if self.matches == 0 else round(get_avg(self.points, self.matches))
+
+    def get_last_5_wins(self):
+        return sum(self.last_5_wins)
+    
+    def get_last_5_points(self):
+        return sum(self.last_5_points)
 
     def update(self, points, points_opponents):
         is_winner = points > points_opponents
         self.wins += is_winner
         self.matches += 1
         self.points += points
-        self.plus_minus += (points - points_opponents)
-
+        self.last_5_wins.append(is_winner)
+        self.last_5_points.append(points)

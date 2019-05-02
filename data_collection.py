@@ -67,11 +67,8 @@ def update_match(season, home_id, away_id, winner):
     home_data = [home.get_win_percentage(), home.get_last_5_wins(), home.get_avg_points(), home.get_last_5_points()]
     away_data = [away.get_win_percentage(), away.get_last_5_wins(), away.get_avg_points(), away.get_last_5_points()]
     home_and_away = home_data + away_data
-    parameters = ["home win percentage", "home last 5 wins", "home avg points", "home last 5 points",
-                "away win percentage", "away last 5 wins", "away avg points", "away last 5 points",
-                "winner"]
 
-    new_match = pd.DataFrame([home_and_away + [winner]], columns=parameters)
+    new_match = pd.DataFrame([home_and_away + [winner]], columns=const.MATCHES_PARAMETERS)
     matches_data = matches_data.append(new_match, ignore_index=True)
 
 def update_team(season, team_id, points, opponents_points):

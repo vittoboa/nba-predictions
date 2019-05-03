@@ -1,6 +1,7 @@
 import const
 
 import pandas as pd
+import numpy as np
 
 
 def get_matches_data(filename):
@@ -16,7 +17,15 @@ def remove_first_matches(matches):
 
     return matches
 
+def get_X_y(matches):
+    forecast_column = "winner"
+    X = np.array(matches.drop([forecast_column], 1))
+    y = np.array(matches[forecast_column])
+
+    return X, y
+
 
 if __name__ == '__main__':
     matches = get_matches_data("matches.csv")
     relevant_matches = remove_first_matches(matches)
+    X, y = get_X_y(relevant_matches)

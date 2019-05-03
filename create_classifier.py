@@ -2,6 +2,7 @@ import const
 
 import pandas as pd
 import numpy as np
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
 
 def get_matches_data(filename):
@@ -24,8 +25,15 @@ def get_X_y(matches):
 
     return X, y
 
+def create_classifier(X, y):
+    clf = QuadraticDiscriminantAnalysis()
+    clf.fit(X, y)
+
+    return clf
+
 
 if __name__ == '__main__':
     matches = get_matches_data("matches.csv")
     relevant_matches = remove_first_matches(matches)
     X, y = get_X_y(relevant_matches)
+    clf = create_classifier(X, y)

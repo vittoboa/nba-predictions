@@ -1,5 +1,6 @@
 import const
 
+import pickle
 import pandas as pd
 import numpy as np
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
@@ -31,9 +32,14 @@ def create_classifier(X, y):
 
     return clf
 
+def save_classifier(classifier, filename):
+    with open(filename, 'wb') as f:
+        pickle.dump(classifier, f)
+
 
 if __name__ == '__main__':
     matches = get_matches_data("matches.csv")
     relevant_matches = remove_first_matches(matches)
     X, y = get_X_y(relevant_matches)
     clf = create_classifier(X, y)
+    save_classifier(clf, 'quadratic_discriminant_analysis.pickle')

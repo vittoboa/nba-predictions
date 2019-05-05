@@ -27,19 +27,19 @@ def get_X_y(matches):
     return X, y
 
 def create_classifier(X, y):
+    print('Creating a classifier...')
     clf = QuadraticDiscriminantAnalysis()
     clf.fit(X, y)
 
     return clf
 
-def save_classifier(classifier, filename):
+def save_to_file(classifier, filename):
     with open(filename, 'wb') as f:
         pickle.dump(classifier, f)
 
-
-if __name__ == '__main__':
-    matches = get_matches_data("matches.csv")
+def save_classifier(filename):
+    matches = get_matches_data(const.FILE_MATCHES_DATA)
     relevant_matches = remove_first_matches(matches)
     X, y = get_X_y(relevant_matches)
     clf = create_classifier(X, y)
-    save_classifier(clf, 'quadratic_discriminant_analysis.pickle')
+    save_to_file(clf, filename)

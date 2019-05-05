@@ -1,3 +1,16 @@
+import os
+import const
+import pickle
+
+import data_collection
+import create_classifier
+
+
+def retrive_classifier():
+    pickle_in = open(const.FILE_CLASSIFIER, 'rb')
+    classifier = pickle.load(pickle_in)
+    return classifier
+
 def ask_team_name(court):
     return input(court + ' team name: ')
 
@@ -28,6 +41,15 @@ def main():
     team_home_name, team_home_data = ask_team_name('Home'), get_team_data('Home')
     team_away_name, team_away_data = ask_team_name('Away'), get_team_data('Away')
     teams_data = team_home_data + team_away_data
+
+    """ if a classifier has been saved retrive it, else create a new one """
+    if not os.path.exists('./' + const.FILE_CLASSIFIER):
+        # create a classifier
+        if not os.path.exists('./' + const.FILE_MATCHES_DATA):
+            # save matches timeline if doesn't exist
+            data_collection.save_matches_timeline(const.FILE_MATCHES_DATA)
+        create_classifier.save_classifier(const.FILE_CLASSIFIER)
+    clf = retrive_classifier()
 
 
 if __name__ == '__main__':

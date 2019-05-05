@@ -86,10 +86,10 @@ def retrive_data(game):
     update_team(season, home_team_id, home_points, away_points)
     update_team(season, away_team_id, away_points, home_points)
 
-
-if __name__ == '__main__':
+def save_matches_timeline(filename):
+    print('Retriving previous matches to train classifier...')
     for game_id in get_games_id():
         game = get_game(game_id)
         retrive_data(game)
 
-    save_to_file("matches.csv")
+    save_to_file(filename)

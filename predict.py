@@ -11,6 +11,15 @@ def retrive_classifier():
     classifier = pickle.load(pickle_in)
     return classifier
 
+def predict(classifier, data):
+    print('Computing...')
+    return classifier.predict([data])[0]
+
+def get_winner_name(prediction, home_name, away_name):
+    home, away = 0, 1
+    winner = home_name if prediction == home else away_name
+    return winner
+
 def ask_team_name(court):
     return input(court + ' team name: ')
 
@@ -50,6 +59,11 @@ def main():
             data_collection.save_matches_timeline(const.FILE_MATCHES_DATA)
         create_classifier.save_classifier(const.FILE_CLASSIFIER)
     clf = retrive_classifier()
+
+    """ predict the winner """
+    prediction = predict(clf, teams_data)
+    winner = get_winner_name(prediction, team_home_name, team_away_name)
+    print("The winner is: " + winner)
 
 
 if __name__ == '__main__':

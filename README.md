@@ -16,3 +16,10 @@ $ pip3 install -r requirements.txt
 # Run the app
 $ python3 predict.py
 ```
+
+## Built With
+This software uses the following open source packages:
+- [nba_api](https://github.com/swar/nba_api)
+- [scikit-learn](https://scikit-learn.org/stable/)
+- [Pandas](https://pandas.pydata.org/)
+- [NumPy](https://www.numpy.org/)

@@ -19,6 +19,15 @@ def remove_first_matches(matches):
 
     return matches
 
+def merge_related_features(matches):
+    new_matches = pd.DataFrame()
+    new_matches["win diff"] = matches["home win percentage"] - matches["away win percentage"]
+    new_matches["last 5 wins diff"] = matches["home last 5 wins"] - matches["away last 5 wins"]
+    new_matches["points diff"] = matches["home avg points"] - matches["away avg points"]
+    new_matches["last 5 points diff"] = matches["home last 5 points"] - matches["away last 5 points"]
+    new_matches["winner"] = matches["winner"]
+    return new_matches
+
 def get_X_y(matches):
     forecast_column = "winner"
     X = np.array(matches.drop([forecast_column], 1))
@@ -40,6 +49,7 @@ def save_to_file(classifier, filename):
 def save_classifier(filename):
     matches = get_matches_data(const.FILE_MATCHES_DATA)
     relevant_matches = remove_first_matches(matches)
+    relevant_matches = merge_related_features(relevant_matches)
     X, y = get_X_y(relevant_matches)
     clf = create_classifier(X, y)
     save_to_file(clf, filename)

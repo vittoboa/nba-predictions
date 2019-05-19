@@ -49,7 +49,7 @@ def main():
     print('Enter the following informations about the match that needs to be predicted.')
     team_home_name, team_home_data = ask_team_name('Home'), get_team_data('Home')
     team_away_name, team_away_data = ask_team_name('Away'), get_team_data('Away')
-    teams_data = team_home_data + team_away_data
+    teams_data = [home - away for home, away in zip(team_home_data, team_away_data)]
 
     """ if a classifier has been saved retrive it, else create a new one """
     if not os.path.exists('./' + const.FILE_CLASSIFIER):

@@ -3,6 +3,7 @@ import const
 import pickle
 import pandas as pd
 import numpy as np
+from sklearn import preprocessing
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
 
@@ -31,6 +32,8 @@ def merge_related_features(matches):
 def get_X_y(matches):
     forecast_column = "winner"
     X = np.array(matches.drop([forecast_column], 1))
+    scaler = preprocessing.MinMaxScaler()
+    X = scaler.fit_transform(X)
     y = np.array(matches[forecast_column])
 
     return X, y

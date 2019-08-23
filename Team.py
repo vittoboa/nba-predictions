@@ -1,8 +1,4 @@
-import collections
-
-
-def get_avg(sum, n):
-    return sum / n
+from utils import get_avg
 
 
 class Team:
@@ -13,37 +9,46 @@ class Team:
 
     def reset(self):
         self.matches = 0
-        self.wins = 0
-        self.points = 0
-        self.last_5_wins = collections.deque(maxlen=5)
-        self.last_5_points = collections.deque(maxlen=5)
+        self.shooting = {'off': 0, 'def': 0}
+        self.poss = {'off': 0, 'def': 0}
+        self.oreb = {'off': 0, 'def': 0}
+        self.free_throws = {'off': 0, 'def': 0}
 
     @property
     def season(self):
         return self._season
-    
+
     @season.setter
     def season(self, new_season):
         if self._season != new_season:
             self._season = new_season
             self.reset()
-    
-    def get_win_percentage(self):
-        return 0 if self.matches == 0 else round(get_avg(self.wins, self.matches), 3)
-    
-    def get_avg_points(self):
-        return 0 if self.matches == 0 else round(get_avg(self.points, self.matches))
 
-    def get_last_5_wins(self):
-        return sum(self.last_5_wins)
-    
-    def get_last_5_points(self):
-        return sum(self.last_5_points)
+    def get_avg_stat(self, stat, side='off'):
+        stats = {'shooting': self.shooting, 'poss': self.poss,
+                 'oreb': self.oreb, 'free throws': self.free_throws}
+        sides = ['off', 'def']
 
-    def update(self, points, points_opponents):
-        is_winner = points > points_opponents
-        self.wins += is_winner
+        if stat not in stats:
+            raise ValueError("Invalid stat. Expected one of: %s" % stats)
+        elif side not in sides:
+            raise ValueError("Invalid side. Expected one of: %s" % sides)
+
+        if self.matches == 0:
+            stat = 0
+        else:
+            stat = stats[stat][side]
+            stat = get_avg(stat, self.matches)
+
+        return stat
+
+    def update(self, o_stg, d_stg, o_poss, d_poss, o_oreb, d_oreb, o_ft, d_ft):
         self.matches += 1
-        self.points += points
-        self.last_5_wins.append(is_winner)
-        self.last_5_points.append(points)
+        self.shooting['off'] += o_stg
+        self.shooting['def'] += d_stg
+        self.poss['off'] += o_poss
+        self.poss['def'] += d_poss
+        self.oreb['off'] += o_oreb
+        self.oreb['def'] += d_oreb
+        self.free_throws['off'] += o_ft
+        self.free_throws['def'] += d_ft

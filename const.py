@@ -3,15 +3,24 @@ FIRST_MATCHES = 200
 FIRST_YEAR, LAST_YEAR = 19, 19
 NUM_SEASONS = LAST_YEAR - FIRST_YEAR + 1
 
-INDEX_GAME_SUMMARY = 0
-INDEX_TEAM_ID = 3
-INDEX_LINE_SCORE = 5
-INDEX_SEASON = 8
-INDEX_POINTS = 22
+INDEX_TEAM_STATS = 1
+INDEX_TEAM_ID = 1
+INDEX_FGM = 6
+INDEX_FGA = 7
+INDEX_FG3M = 9
+INDEX_FTM = 12
+INDEX_FTA = 13
+INDEX_OREB = 15
+INDEX_DREB = 16
+INDEX_TO = 21
+INDEX_POINTS = 23
 
-MATCHES_PARAMETERS = ["home win percentage", "home last 5 wins", "home avg points", "home last 5 points",
-                    "away win percentage", "away last 5 wins", "away avg points", "away last 5 points",
-                    "winner"]
+MATCHES_PARAMETERS = ["home avg off shooting", "home avg off poss", "home avg off oreb",
+                      "home avg off ft", "home avg def shooting", "home avg def poss",
+                      "home avg def oreb", "home avg def ft", "away avg off shooting",
+                      "away avg off poss", "away avg off oreb", "away avg off ft",
+                      "away avg def shooting", "away avg def poss", "away avg def oreb",
+                      "away avg def ft", "winner"]
 
 FILE_MATCHES_DATA = "matches.csv"
 FILE_CLASSIFIER = "quadratic_discriminant_analysis.pickle"

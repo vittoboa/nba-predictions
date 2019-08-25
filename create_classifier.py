@@ -1,14 +1,16 @@
 import const
+from utils import remove_outliers
 
 import pickle
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.linear_model import LogisticRegression
 
 
 def get_matches_data(filename):
     return pd.read_csv(filename)
+
 
 def remove_first_matches(matches):
     """ remove the first games of each season, it's too early for their data to be relevant """
@@ -20,39 +22,37 @@ def remove_first_matches(matches):
 
     return matches
 
-def merge_related_features(matches):
-    new_matches = pd.DataFrame()
-    new_matches["win diff"] = matches["home win percentage"] - matches["away win percentage"]
-    new_matches["last 5 wins diff"] = matches["home last 5 wins"] - matches["away last 5 wins"]
-    new_matches["points diff"] = matches["home avg points"] - matches["away avg points"]
-    new_matches["last 5 points diff"] = matches["home last 5 points"] - matches["away last 5 points"]
-    new_matches["winner"] = matches["winner"]
-    return new_matches
 
 def get_X_y(matches):
-    forecast_column = "winner"
-    X = np.array(matches.drop([forecast_column], 1))
+    features = matches.drop([const.TARGET], 1)
+    target = matches[const.TARGET]
+
+    X = np.array(features)
     scaler = preprocessing.MinMaxScaler()
     X = scaler.fit_transform(X)
-    y = np.array(matches[forecast_column])
+    y = np.array(target)
 
     return X, y
 
+
 def create_classifier(X, y):
     print('Creating a classifier...')
-    clf = QuadraticDiscriminantAnalysis()
+
+    clf = LogisticRegression(solver='saga', penalty='l2', class_weight='balanced')
     clf.fit(X, y)
 
     return clf
+
 
 def save_to_file(classifier, filename):
     with open(filename, 'wb') as f:
         pickle.dump(classifier, f)
 
+
 def save_classifier(filename):
     matches = get_matches_data(const.FILE_MATCHES_DATA)
-    relevant_matches = remove_first_matches(matches)
-    relevant_matches = merge_related_features(relevant_matches)
-    X, y = get_X_y(relevant_matches)
+    matches_relevant = remove_first_matches(matches)
+    matches_relevant = remove_outliers(matches_relevant, const.TARGET)
+    X, y = get_X_y(matches_relevant)
     clf = create_classifier(X, y)
     save_to_file(clf, filename)

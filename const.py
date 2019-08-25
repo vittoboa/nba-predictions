@@ -15,12 +15,13 @@ INDEX_DREB = 16
 INDEX_TO = 21
 INDEX_POINTS = 23
 
+TARGET = "winner"
 MATCHES_PARAMETERS = ["home avg off shooting", "home avg off poss", "home avg off oreb",
                       "home avg off ft", "home avg def shooting", "home avg def poss",
                       "home avg def oreb", "home avg def ft", "away avg off shooting",
                       "away avg off poss", "away avg off oreb", "away avg off ft",
                       "away avg def shooting", "away avg def poss", "away avg def oreb",
-                      "away avg def ft", "winner"]
+                      "away avg def ft", TARGET]
 
 FILE_MATCHES_DATA = "matches.csv"
-FILE_CLASSIFIER = "quadratic_discriminant_analysis.pickle"
+FILE_CLASSIFIER = "logistic_regression.pickle"

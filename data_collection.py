@@ -1,12 +1,6 @@
 import Team
 import const
-from utils import (calculate_shooting,
-                   calculate_poss,
-                   calculate_oreb,
-                   calculate_free_thorows,
-                   add_digits,
-                   save_dataframe_in_file,
-                   calculate_four_factors)
+from utils import add_digits, save_dataframe_in_file, calculate_four_factors
 
 import pandas as pd
 from nba_api.stats.endpoints import boxscoretraditionalv2

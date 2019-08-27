@@ -15,6 +15,7 @@ INDEX_DREB = 16
 INDEX_TO = 21
 INDEX_POINTS = 23
 
+FOUR_FACTORS = ("shooting", "poss", "oreb", "free throws")
 TARGET = "winner"
 MATCHES_PARAMETERS = ["home avg off shooting", "home avg off poss", "home avg off oreb",
                       "home avg off ft", "home avg def shooting", "home avg def poss",

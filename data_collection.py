@@ -5,7 +5,8 @@ from utils import (calculate_shooting,
                    calculate_oreb,
                    calculate_free_thorows,
                    add_digits,
-                   save_dataframe_in_file)
+                   save_dataframe_in_file,
+                   calculate_four_factors)
 
 import pandas as pd
 from nba_api.stats.endpoints import boxscoretraditionalv2
@@ -99,17 +100,11 @@ def get_winner(home_data, away_data):
 
 
 def get_four_factores(home, away):
-    home_four_factors = {}
-    away_four_factors = {}
+    home_four_factors = calculate_four_factors(home, away["dreb"])
+    home_four_factors = dict(zip(const.FOUR_FACTORS, home_four_factors))
 
-    home_four_factors["shooting"] = calculate_shooting(home["fgm"], home["fg3m"], home["fga"])
-    away_four_factors["shooting"] = calculate_shooting(away["fgm"], away["fg3m"], away["fga"])
-    home_four_factors["poss"] = calculate_poss(home["fga"], home["oreb"], home["to"], home["fta"])
-    away_four_factors["poss"] = calculate_poss(away["fga"], away["oreb"], away["to"], away["fta"])
-    home_four_factors["oreb"] = calculate_oreb(home["oreb"], away["dreb"])
-    away_four_factors["oreb"] = calculate_oreb(away["oreb"], home["dreb"])
-    home_four_factors["free throws"] = calculate_free_thorows(home["ftm"], home["fga"])
-    away_four_factors["free throws"] = calculate_free_thorows(away["ftm"], away["fga"])
+    away_four_factors = calculate_four_factors(away, home["dreb"])
+    away_four_factors = dict(zip(const.FOUR_FACTORS, away_four_factors))
 
     return home_four_factors, away_four_factors
 

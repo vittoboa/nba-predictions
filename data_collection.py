@@ -1,6 +1,6 @@
 import Team
 import const
-from utils import add_digits, save_dataframe_in_file, calculate_four_factors
+from utils import add_digits, save_dataframe_in_file
 
 import pandas as pd
 from nba_api.stats.endpoints import boxscoretraditionalv2
@@ -45,13 +45,14 @@ def get_team(id, season):
 def update_match(season, home_id, away_id, winner):
     global matches_data
     home, away = get_team(home_id, season), get_team(away_id, season)
-    home_data = [home.get_avg_stat('shooting'), home.get_avg_stat('poss'),
-                 home.get_avg_stat('oreb'), home.get_avg_stat('free throws'),
-                 home.get_avg_stat('shooting', 'def'), home.get_avg_stat('poss', 'def'),
+
+    home_data = [home.get_avg_stat('win'), home.get_avg_stat('pts', 'off'), home.get_avg_stat('shooting', 'off'),
+                 home.get_avg_stat('poss', 'off'), home.get_avg_stat('oreb', 'off'), home.get_avg_stat('free throws', 'off'),
+                 home.get_avg_stat('pts', 'def'), home.get_avg_stat('shooting', 'def'), home.get_avg_stat('poss', 'def'),
                  home.get_avg_stat('oreb', 'def'), home.get_avg_stat('free throws', 'def')]
-    away_data = [away.get_avg_stat('shooting'), away.get_avg_stat('poss'),
-                 away.get_avg_stat('oreb'), away.get_avg_stat('free throws'),
-                 away.get_avg_stat('shooting', 'def'), away.get_avg_stat('poss', 'def'),
+    away_data = [away.get_avg_stat('win'), away.get_avg_stat('pts', 'off'), away.get_avg_stat('shooting', 'off'),
+                 away.get_avg_stat('poss', 'off'), away.get_avg_stat('oreb', 'off'), away.get_avg_stat('free throws', 'off'),
+                 away.get_avg_stat('pts', 'def'), away.get_avg_stat('shooting', 'def'), away.get_avg_stat('poss', 'def'),
                  away.get_avg_stat('oreb', 'def'), away.get_avg_stat('free throws', 'def')]
 
     home_and_away = home_data + away_data
@@ -60,13 +61,10 @@ def update_match(season, home_id, away_id, winner):
     matches_data = matches_data.append(new_match, ignore_index=True)
 
 
-def update_team(season, team_id, own_four_factors, opnt_four_factors):
+def update_team(season, team_id, own_data, opnt_data):
     team = get_team(team_id, season)
     team.season = season
-    team.update(own_four_factors["shooting"], opnt_four_factors["shooting"],
-                own_four_factors["poss"], opnt_four_factors["poss"],
-                own_four_factors["oreb"], opnt_four_factors["oreb"],
-                own_four_factors["free throws"], opnt_four_factors["free throws"])
+    team.update(own_data, opnt_data)
 
 
 def get_match_data(game):
@@ -88,30 +86,20 @@ def get_match_data(game):
     return home, away
 
 
-def get_winner(home_data, away_data):
+def get_winner(home_pts, away_pts):
     home, away = 0, 1
-    return home if home_data["pts"] > away_data["pts"] else away
-
-
-def get_four_factores(home, away):
-    home_four_factors = calculate_four_factors(home, away["dreb"])
-    home_four_factors = dict(zip(const.FOUR_FACTORS, home_four_factors))
-
-    away_four_factors = calculate_four_factors(away, home["dreb"])
-    away_four_factors = dict(zip(const.FOUR_FACTORS, away_four_factors))
-
-    return home_four_factors, away_four_factors
+    return home if home_pts > away_pts else away
 
 
 def update_saved_data(season, home_data, away_data):
     home_id, away_id = home_data["id"], away_data["id"]
-    home_four_factors, away_four_factors = get_four_factores(home_data, away_data)
-    winner = get_winner(home_data, away_data)
+    home_pts, away_pts = home_data["pts"], away_data["pts"]
+    winner = get_winner(home_pts, away_pts)
 
     update_match(season, home_id, away_id, winner)
 
-    update_team(season, home_id, home_four_factors, away_four_factors)
-    update_team(season, away_id, away_four_factors, home_four_factors)
+    update_team(season, home_id, home_data, away_data)
+    update_team(season, away_id, away_data, home_data)
 
 
 def save_matches_timeline(filename):

@@ -1,4 +1,4 @@
-from utils import get_avg
+from utils import get_avg, get_four_factors
 
 
 class Team:
@@ -9,6 +9,8 @@ class Team:
 
     def reset(self):
         self.matches = 0
+        self.win = 0
+        self.pts = {'off': 0, 'def': 0}
         self.shooting = {'off': 0, 'def': 0}
         self.poss = {'off': 0, 'def': 0}
         self.oreb = {'off': 0, 'def': 0}
@@ -24,10 +26,11 @@ class Team:
             self._season = new_season
             self.reset()
 
-    def get_avg_stat(self, stat, side='off'):
-        stats = {'shooting': self.shooting, 'poss': self.poss,
+    def get_avg_stat(self, stat, side=None):
+        stats = {'win': self.win, 'pts': self.pts,
+                 'shooting': self.shooting, 'poss': self.poss,
                  'oreb': self.oreb, 'free throws': self.free_throws}
-        sides = ['off', 'def']
+        sides = ['off', 'def', None]
 
         if stat not in stats:
             raise ValueError("Invalid stat. Expected one of: %s" % stats)
@@ -37,18 +40,24 @@ class Team:
         if self.matches == 0:
             stat = 0
         else:
-            stat = stats[stat][side]
+            stat = stats[stat] if side is None else stats[stat][side]
             stat = get_avg(stat, self.matches)
 
         return stat
 
-    def update(self, o_stg, d_stg, o_poss, d_poss, o_oreb, d_oreb, o_ft, d_ft):
+    def update(self, own_data, opnt_data):
+        own_four_factors = get_four_factors(own_data, opnt_data["dreb"])
+        opnt_four_factors = get_four_factors(opnt_data, own_data["dreb"])
+
         self.matches += 1
-        self.shooting['off'] += o_stg
-        self.shooting['def'] += d_stg
-        self.poss['off'] += o_poss
-        self.poss['def'] += d_poss
-        self.oreb['off'] += o_oreb
-        self.oreb['def'] += d_oreb
-        self.free_throws['off'] += o_ft
-        self.free_throws['def'] += d_ft
+        self.win += 1 if own_data['pts'] > opnt_data['pts'] else 0
+        self.pts['off'] += own_data['pts']
+        self.pts['def'] += opnt_data['pts']
+        self.shooting['off'] += own_four_factors['shooting']
+        self.shooting['def'] += opnt_four_factors['shooting']
+        self.poss['off'] += own_four_factors['poss']
+        self.poss['def'] += opnt_four_factors['poss']
+        self.oreb['off'] += own_four_factors['oreb']
+        self.oreb['def'] += opnt_four_factors['oreb']
+        self.free_throws['off'] += own_four_factors['free throws']
+        self.free_throws['def'] += opnt_four_factors['free throws']

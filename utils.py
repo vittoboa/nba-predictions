@@ -1,3 +1,6 @@
+import const
+
+
 def calculate_shooting(fgm, fg3m, fga):
     """ effective field goal """
     return (fgm + fg3m/2) / fga
@@ -18,15 +21,16 @@ def calculate_free_thorows(ftm, fga):
     return ftm / fga
 
 
-def calculate_four_factors(four_factors_data, opnt_dreb):
+def get_four_factors(four_factors_data, opnt_dreb):
     ffd = four_factors_data
 
     shooting = calculate_shooting(ffd["fgm"], ffd["fg3m"], ffd["fga"])
     poss = calculate_poss(ffd["fga"], ffd["oreb"], ffd["to"], ffd["fta"])
     oreb = calculate_oreb(ffd["oreb"], opnt_dreb)
     free_throws = calculate_free_thorows(ffd["ftm"], ffd["fga"])
+    four_factors = (shooting, poss, oreb, free_throws)
 
-    return shooting, poss, oreb, free_throws
+    return dict(zip(const.FOUR_FACTORS, four_factors))
 
 
 def get_avg(sum, n):

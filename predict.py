@@ -1,9 +1,10 @@
 import os
+from itertools import chain
 import const
 import pickle
 from data_collection import save_matches_timeline
 from create_classifier import save_classifier
-from utils import calculate_four_factors
+from utils import get_four_factors
 
 
 def retrive_classifier():
@@ -28,13 +29,16 @@ def ask_team_name(court):
 
 
 def ask_stat(stat, court, is_opnt=False):
-    return int(input(f"{stat} ({court} team's {'opponent ' if is_opnt else ''}stats): "))
+    return float(input(f"{stat} ({court} team's {'opponent ' if is_opnt else ''}stats): "))
 
 
-def ask_four_factors_data(court):
+def ask_teams_data(court):
     data_team = {}
     data_opponent = {}
 
+    data_team["avg win"] = ask_stat("avg win percentage", court)
+    data_team["pts"] = ask_stat("points", court)
+    data_opponent["pts"] = ask_stat("points", court, is_opnt=True)
     data_team["fgm"] = ask_stat("field goals", court)
     data_opponent["fgm"] = ask_stat("field goals", court, is_opnt=True)
     data_team["fg3m"] = ask_stat("3-point field goals", court)
@@ -55,25 +59,31 @@ def ask_four_factors_data(court):
     return data_team, data_opponent
 
 
-def get_four_factors(home, away):
-    home_data, home_data_opponent = ask_four_factors_data(home)
-    away_data, away_data_opponent = ask_four_factors_data(away)
-    home_four_factors_own = calculate_four_factors(home_data, away_data["dreb"])
-    home_four_factors_opponent = calculate_four_factors(home_data_opponent, away_data_opponent["dreb"])
-    away_four_factors_own = calculate_four_factors(away_data, home_data["dreb"])
-    away_four_factors_opponent = calculate_four_factors(away_data_opponent, home_data_opponent["dreb"])
-    home_four_factors = home_four_factors_own + home_four_factors_opponent
-    away_four_factors = away_four_factors_own + away_four_factors_opponent
+def get_teams_data(home, away):
+    home_data, home_data_opponent = ask_teams_data(home)
+    away_data, away_data_opponent = ask_teams_data(away)
+    home_avg_win, away_avg_win = home_data["avg win"], away_data["avg win"]
+    home_pts, home_pts_opponent = home_data["pts"], home_data_opponent["pts"]
+    away_pts, away_pts_opponent = away_data["pts"], away_data_opponent["pts"]
+    home_four_factors = get_four_factors(home_data, away_data["dreb"])
+    home_four_factors_opponent = get_four_factors(home_data_opponent, away_data_opponent["dreb"])
+    away_four_factors = get_four_factors(away_data, home_data["dreb"])
+    away_four_factors_opponent = get_four_factors(away_data_opponent, home_data_opponent["dreb"])
 
-    return home_four_factors + away_four_factors
+    home_data_final = chain([home_avg_win, home_pts], home_four_factors.values(),
+                            [home_pts_opponent], home_four_factors_opponent.values())
+
+    away_data_final = chain([away_avg_win, away_pts], away_four_factors.values(),
+                            [away_pts_opponent], away_four_factors_opponent.values())
+
+    return list(chain(home_data_final, away_data_final))
 
 
 def main():
     """ ask the user about the teams data """
     print('Enter the following informations about the match that needs to be predicted.')
     home_name, away_name = ask_team_name("Home"), ask_team_name("Away")
-    teams_data = [num for num in get_four_factors(home_name, away_name)]
-    print(teams_data)
+    teams_data = get_teams_data(home_name, away_name)
 
     """ if a classifier has been saved retrive it, else create a new one """
     if not os.path.exists('./' + const.FILE_CLASSIFIER):

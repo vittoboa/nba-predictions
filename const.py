@@ -17,12 +17,12 @@ INDEX_POINTS = 23
 
 FOUR_FACTORS = ("shooting", "poss", "oreb", "free throws")
 TARGET = "winner"
-MATCHES_PARAMETERS = ["home avg win", "home avg off points", "home avg def points", "home avg off shooting",
-                      "home avg off poss", "home avg off oreb", "home avg off ft",
+MATCHES_PARAMETERS = ["home avg win", "home avg off points", "home avg off shooting",
+                      "home avg off poss", "home avg off oreb", "home avg off ft", "home avg def points",
                       "home avg def shooting", "home avg def poss", "home avg def oreb",
-                      "home avg def ft", "away avg win", "away avg off points", "away avg def points",
-                      "away avg off shooting", "away avg off poss", "away avg off oreb",
-                      "away avg off ft", "away avg def shooting", "away avg def poss",
+                      "home avg def ft", "away avg win", "away avg off points", "away avg off shooting",
+                      "away avg off poss", "away avg off oreb", "away avg off ft",
+                      "away avg def points", "away avg def shooting", "away avg def poss",
                       "away avg def oreb", "away avg def ft", TARGET]
 
 FILE_MATCHES_DATA = "matches.csv"

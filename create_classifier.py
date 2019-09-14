@@ -4,7 +4,6 @@ from utils import remove_outliers
 import pickle
 import pandas as pd
 import numpy as np
-from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression
 
 
@@ -28,8 +27,6 @@ def get_X_y(matches):
     target = matches[const.TARGET]
 
     X = np.array(features)
-    scaler = preprocessing.MinMaxScaler()
-    X = scaler.fit_transform(X)
     y = np.array(target)
 
     return X, y

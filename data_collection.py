@@ -42,9 +42,8 @@ def get_team(id, season):
     return next((team for team in teams_data if team.id == id), add_team(id, season))
 
 
-def update_match(season, home_id, away_id, winner):
+def update_match(season, home, away, winner):
     global matches_data
-    home, away = get_team(home_id, season), get_team(away_id, season)
 
     home_data = [home.get_avg_stat('win'), home.get_avg_stat('pts', 'off'), home.get_avg_stat('shooting', 'off'),
                  home.get_avg_stat('poss', 'off'), home.get_avg_stat('oreb', 'off'), home.get_avg_stat('free throws', 'off'),
@@ -61,8 +60,7 @@ def update_match(season, home_id, away_id, winner):
     matches_data = matches_data.append(new_match, ignore_index=True)
 
 
-def update_team(season, team_id, own_data, opnt_data):
-    team = get_team(team_id, season)
+def update_team(season, team, own_data, opnt_data):
     team.season = season
     team.update(own_data, opnt_data)
 
@@ -95,11 +93,12 @@ def update_saved_data(season, home_data, away_data):
     home_id, away_id = home_data["id"], away_data["id"]
     home_pts, away_pts = home_data["pts"], away_data["pts"]
     winner = get_winner(home_pts, away_pts)
+    home, away = get_team(home_id, season), get_team(away_id, season)
 
-    update_match(season, home_id, away_id, winner)
+    update_match(season, home, away, winner)
 
-    update_team(season, home_id, home_data, away_data)
-    update_team(season, away_id, away_data, home_data)
+    update_team(season, home, home_data, away_data)
+    update_team(season, away, away_data, home_data)
 
 
 def save_matches_timeline(filename):

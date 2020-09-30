@@ -1,13 +1,8 @@
-import Team
 import const
 from utils import add_digits, save_dataframe_in_file
 
 import pandas as pd
 from nba_api.stats.endpoints import boxscoretraditionalv2
-
-
-teams_data = []
-matches_data = pd.DataFrame()
 
 
 def calculate_game_id(year, game_number):
@@ -34,80 +29,47 @@ def get_stat(teams_stats, index):
     return home_stats[index], away_stats[index]
 
 
-def add_team(id, season):
-    teams_data.append(Team.Team(id, season))
-
-
-def get_team(id, season):
-    return next((team for team in teams_data if team.id == id), add_team(id, season))
-
-
-def update_match(season, home, away, winner):
-    global matches_data
-
-    home_data = [home.get_avg_stat('win'), home.get_avg_stat('pts', 'off'), home.get_avg_stat('shooting', 'off'),
-                 home.get_avg_stat('poss', 'off'), home.get_avg_stat('oreb', 'off'), home.get_avg_stat('free throws', 'off'),
-                 home.get_avg_stat('pts', 'def'), home.get_avg_stat('shooting', 'def'), home.get_avg_stat('poss', 'def'),
-                 home.get_avg_stat('oreb', 'def'), home.get_avg_stat('free throws', 'def')]
-    away_data = [away.get_avg_stat('win'), away.get_avg_stat('pts', 'off'), away.get_avg_stat('shooting', 'off'),
-                 away.get_avg_stat('poss', 'off'), away.get_avg_stat('oreb', 'off'), away.get_avg_stat('free throws', 'off'),
-                 away.get_avg_stat('pts', 'def'), away.get_avg_stat('shooting', 'def'), away.get_avg_stat('poss', 'def'),
-                 away.get_avg_stat('oreb', 'def'), away.get_avg_stat('free throws', 'def')]
-
-    home_and_away = home_data + away_data
-
-    new_match = pd.DataFrame([home_and_away + [winner]], columns=const.MATCHES_PARAMETERS)
-    matches_data = matches_data.append(new_match, ignore_index=True)
-
-
-def update_team(season, team, own_data, opnt_data):
-    team.season = season
-    team.update(own_data, opnt_data)
-
-
-def get_match_data(game):
+def get_match_data_as_dataframe(game_id):
+    game = get_game(game_id)
     teams_stats = get_team_stats(game)
-    home = {}
-    away = {}
 
-    home["id"], away["id"] = get_stat(teams_stats, const.INDEX_TEAM_ID)
-    home["pts"], away["pts"] = get_stat(teams_stats, const.INDEX_POINTS)
-    home["fgm"], away["fgm"] = get_stat(teams_stats, const.INDEX_FGM)
-    home["fg3m"], away["fg3m"] = get_stat(teams_stats, const.INDEX_FG3M)
-    home["fga"], away["fga"] = get_stat(teams_stats, const.INDEX_FGA)
-    home["oreb"], away["oreb"] = get_stat(teams_stats, const.INDEX_OREB)
-    home["dreb"], away["dreb"] = get_stat(teams_stats, const.INDEX_DREB)
-    home["to"], away["to"] = get_stat(teams_stats, const.INDEX_TO)
-    home["fta"], away["fta"] = get_stat(teams_stats, const.INDEX_FTA)
-    home["ftm"], away["ftm"] = get_stat(teams_stats, const.INDEX_FTM)
+    home_id,   away_id   = get_stat(teams_stats, const.INDEX_TEAM_ID)
+    home_name, away_name = get_stat(teams_stats, const.INDEX_TEAM_NAME)
+    home_pts,  away_pts  = get_stat(teams_stats, const.INDEX_PTS)
+    home_fgm,  away_fgm  = get_stat(teams_stats, const.INDEX_FGM)
+    home_fga,  away_fga  = get_stat(teams_stats, const.INDEX_FGA)
+    home_fg3m, away_fg3m = get_stat(teams_stats, const.INDEX_FG3M)
+    home_fg3a, away_fg3a = get_stat(teams_stats, const.INDEX_FG3A)
+    home_ftm,  away_ftm  = get_stat(teams_stats, const.INDEX_FTM)
+    home_fta,  away_fta  = get_stat(teams_stats, const.INDEX_FTA)
+    home_oreb, away_oreb = get_stat(teams_stats, const.INDEX_OREB)
+    home_dreb, away_dreb = get_stat(teams_stats, const.INDEX_DREB)
+    home_reb,  away_reb  = get_stat(teams_stats, const.INDEX_REB)
+    home_ast,  away_ast  = get_stat(teams_stats, const.INDEX_AST)
+    home_stl,  away_stl  = get_stat(teams_stats, const.INDEX_STL)
+    home_blk,  away_blk  = get_stat(teams_stats, const.INDEX_BLK)
+    home_to,   away_to   = get_stat(teams_stats, const.INDEX_TO)
+    home_pf,   away_pf   = get_stat(teams_stats, const.INDEX_PF)
 
-    return home, away
+    home_data = [home_id, home_name, home_pts, home_fgm, home_fga, home_fg3m,
+                 home_fg3a, home_ftm, home_fta, home_oreb, home_dreb, home_reb,
+                 home_ast, home_stl, home_blk, home_to, home_pf]
 
+    away_data = [away_id, away_name, away_pts, away_fgm, away_fga, away_fg3m,
+                 away_fg3a, away_ftm, away_fta, away_oreb, away_dreb, away_reb,
+                 away_ast, away_stl, away_blk, away_to, away_pf]
 
-def get_winner(home_pts, away_pts):
-    home, away = 0, 1
-    return home if home_pts > away_pts else away
-
-
-def update_saved_data(season, home_data, away_data):
-    home_id, away_id = home_data["id"], away_data["id"]
-    home_pts, away_pts = home_data["pts"], away_data["pts"]
-    winner = get_winner(home_pts, away_pts)
-    home, away = get_team(home_id, season), get_team(away_id, season)
-
-    update_match(season, home, away, winner)
-
-    update_team(season, home, home_data, away_data)
-    update_team(season, away, away_data, home_data)
+    return pd.DataFrame([[game_id] + home_data + away_data], columns=const.MATCHES_PARAMETERS_RAW)
 
 
 def save_matches_timeline(filename):
     print('Retriving previous matches to train classifier...')
 
+    matches_data = pd.DataFrame()
+
     for season in range(const.FIRST_YEAR, const.LAST_YEAR + 1):
         for game_id in get_games_id(season):
-            game = get_game(game_id)
-            home_data, away_data = get_match_data(game)
-            update_saved_data(season, home_data, away_data)
+            match_data = get_match_data_as_dataframe(game_id)
+            matches_data = matches_data.append(match_data, ignore_index=True)
 
     save_dataframe_in_file(matches_data, filename)

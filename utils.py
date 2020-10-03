@@ -44,11 +44,6 @@ def save_dataframe_in_file(dataframe: pd.DataFrame, file_name: str) -> None:
     dataframe.to_csv(file_name, index=False)
 
 
-def add_digits(num: int, digits: int) -> str:
-    num_digits = sum(1 for _ in str(num))
-    return ''.join('0' for _ in range(digits - num_digits)) + str(num)
-
-
 def get_quartiles(df: pd.DataFrame) -> Tuple[pd.Series, pd.Series, pd.Series]:
     Q1 = df.quantile(0.25)
     Q2 = df.quantile(0.50)

@@ -44,6 +44,10 @@ def save_dataframe_in_file(dataframe: pd.DataFrame, file_name: str) -> None:
     dataframe.to_csv(file_name, index=False)
 
 
+def calculate_game_id(year, game_number):
+    return "002" + str(year - 1).zfill(2) + str(game_number).zfill(5)
+
+
 def get_quartiles(df: pd.DataFrame) -> Tuple[pd.Series, pd.Series, pd.Series]:
     Q1 = df.quantile(0.25)
     Q2 = df.quantile(0.50)

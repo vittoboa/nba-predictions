@@ -1,13 +1,8 @@
 import const
-from utils import calculate_game_id, save_dataframe_in_file
+from utils import save_dataframe_in_file, get_games_id
 
 import pandas as pd
 from nba_api.stats.endpoints import boxscoretraditionalv2
-
-
-def get_games_id(year):
-    for game_number in range(1, const.NUM_GAMES + 1):
-        yield calculate_game_id(year, game_number)
 
 
 def get_game(game_id):

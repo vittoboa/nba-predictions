@@ -27,6 +27,7 @@ def get_stat(teams_stats, index):
 def get_match_data_as_dataframe(game):
     teams_stats = get_team_stats(game)
 
+    game_id,   _         = get_stat(teams_stats, const.INDEX_GAME_ID)
     home_id,   away_id   = get_stat(teams_stats, const.INDEX_TEAM_ID)
     home_name, away_name = get_stat(teams_stats, const.INDEX_TEAM_NAME)
     home_pts,  away_pts  = get_stat(teams_stats, const.INDEX_PTS)

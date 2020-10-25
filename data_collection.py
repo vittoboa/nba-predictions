@@ -28,6 +28,7 @@ def get_match_data_as_dataframe(game):
     teams_stats = get_team_stats(game)
 
     game_id,   _         = get_stat(teams_stats, const.INDEX_GAME_ID)
+    minutes,   _         = get_stat(teams_stats, const.INDEX_MIN)
     home_id,   away_id   = get_stat(teams_stats, const.INDEX_TEAM_ID)
     home_name, away_name = get_stat(teams_stats, const.INDEX_TEAM_NAME)
     home_pts,  away_pts  = get_stat(teams_stats, const.INDEX_PTS)
@@ -54,7 +55,7 @@ def get_match_data_as_dataframe(game):
                  away_fg3a, away_ftm, away_fta, away_oreb, away_dreb, away_reb,
                  away_ast, away_stl, away_blk, away_to, away_pf]
 
-    return pd.DataFrame([[game_id] + home_data + away_data], columns=const.MATCHES_PARAMETERS_RAW)
+    return pd.DataFrame([[game_id, minutes] + home_data + away_data], columns=const.MATCHES_PARAMETERS_RAW)
 
 
 def save_matches_timeline(filename):

@@ -7,6 +7,7 @@ INDEX_TEAM_STATS = 1
 INDEX_GAME_ID    = 0
 INDEX_TEAM_ID    = 1
 INDEX_TEAM_NAME  = 2
+INDEX_MIN        = 5
 INDEX_FGM        = 6
 INDEX_FGA        = 7
 INDEX_FG3M       = 9

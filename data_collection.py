@@ -27,35 +27,31 @@ def get_stat(teams_stats, index):
 def get_match_data_as_dataframe(game):
     teams_stats = get_team_stats(game)
 
-    game_id,   _         = get_stat(teams_stats, const.INDEX_GAME_ID)
-    minutes,   _         = get_stat(teams_stats, const.INDEX_MIN)
-    home_id,   away_id   = get_stat(teams_stats, const.INDEX_TEAM_ID)
-    home_name, away_name = get_stat(teams_stats, const.INDEX_TEAM_NAME)
-    home_pts,  away_pts  = get_stat(teams_stats, const.INDEX_PTS)
-    home_fgm,  away_fgm  = get_stat(teams_stats, const.INDEX_FGM)
-    home_fga,  away_fga  = get_stat(teams_stats, const.INDEX_FGA)
-    home_fg3m, away_fg3m = get_stat(teams_stats, const.INDEX_FG3M)
-    home_fg3a, away_fg3a = get_stat(teams_stats, const.INDEX_FG3A)
-    home_ftm,  away_ftm  = get_stat(teams_stats, const.INDEX_FTM)
-    home_fta,  away_fta  = get_stat(teams_stats, const.INDEX_FTA)
-    home_oreb, away_oreb = get_stat(teams_stats, const.INDEX_OREB)
-    home_dreb, away_dreb = get_stat(teams_stats, const.INDEX_DREB)
-    home_reb,  away_reb  = get_stat(teams_stats, const.INDEX_REB)
-    home_ast,  away_ast  = get_stat(teams_stats, const.INDEX_AST)
-    home_stl,  away_stl  = get_stat(teams_stats, const.INDEX_STL)
-    home_blk,  away_blk  = get_stat(teams_stats, const.INDEX_BLK)
-    home_to,   away_to   = get_stat(teams_stats, const.INDEX_TO)
-    home_pf,   away_pf   = get_stat(teams_stats, const.INDEX_PF)
+    home, away = {}, {}
 
-    home_data = [home_id, home_name, home_pts, home_fgm, home_fga, home_fg3m,
-                 home_fg3a, home_ftm, home_fta, home_oreb, home_dreb, home_reb,
-                 home_ast, home_stl, home_blk, home_to, home_pf]
+    game_id, _ = get_stat(teams_stats, const.INDEX_GAME_ID)
+    minutes, _ = get_stat(teams_stats, const.INDEX_MIN)
+    home["id"],   away["id"]   = get_stat(teams_stats, const.INDEX_TEAM_ID)
+    home["name"], away["name"] = get_stat(teams_stats, const.INDEX_TEAM_NAME)
+    home["pts"],  away["pts"]  = get_stat(teams_stats, const.INDEX_PTS)
+    home["fgm"],  away["fgm"]  = get_stat(teams_stats, const.INDEX_FGM)
+    home["fga"],  away["fga"]  = get_stat(teams_stats, const.INDEX_FGA)
+    home["fg3m"], away["fg3m"] = get_stat(teams_stats, const.INDEX_FG3M)
+    home["fg3a"], away["fg3a"] = get_stat(teams_stats, const.INDEX_FG3A)
+    home["ftm"],  away["ftm"]  = get_stat(teams_stats, const.INDEX_FTM)
+    home["fta"],  away["fta"]  = get_stat(teams_stats, const.INDEX_FTA)
+    home["oreb"], away["oreb"] = get_stat(teams_stats, const.INDEX_OREB)
+    home["dreb"], away["dreb"] = get_stat(teams_stats, const.INDEX_DREB)
+    home["reb"],  away["reb"]  = get_stat(teams_stats, const.INDEX_REB)
+    home["ast"],  away["ast"]  = get_stat(teams_stats, const.INDEX_AST)
+    home["stl"],  away["stl"]  = get_stat(teams_stats, const.INDEX_STL)
+    home["blk"],  away["blk"]  = get_stat(teams_stats, const.INDEX_BLK)
+    home["to"],   away["to"]   = get_stat(teams_stats, const.INDEX_TO)
+    home["pf"],   away["pf"]   = get_stat(teams_stats, const.INDEX_PF)
 
-    away_data = [away_id, away_name, away_pts, away_fgm, away_fga, away_fg3m,
-                 away_fg3a, away_ftm, away_fta, away_oreb, away_dreb, away_reb,
-                 away_ast, away_stl, away_blk, away_to, away_pf]
+    match_data = [game_id, minutes, *home.values(), *away.values()]
 
-    return pd.DataFrame([[game_id, minutes] + home_data + away_data], columns=const.MATCHES_PARAMETERS_RAW)
+    return pd.DataFrame([match_data], columns=const.MATCHES_PARAMETERS_RAW)
 
 
 def save_matches_timeline(filename):

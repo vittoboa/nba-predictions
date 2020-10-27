@@ -26,17 +26,5 @@ INDEXES_ATTRIBUTES = {
     "pts" : 23
 }
 
-
-MATCHES_PARAMETERS_RAW = ["game id",   "home id",  "home name", "home pts",
-                          "home fgm",  "home fga", "home fg3m", "home fg3a",
-                          "home ftm",  "home fta", "home oreb", "home dreb",
-                          "home reb",  "home ast", "home stl",  "home blk",
-                          "home to",   "home pf",  "away id",   "away name",
-                          "away pts",  "away fgm", "away fga",  "away fg3m",
-                          "away fg3a", "away ftm", "away fta",  "away oreb",
-                          "away dreb", "away reb", "away ast",  "away stl",
-                          "away blk",  "away to",  "away pf"]
-
-
 FILE_MATCHES_DATA_RAW = "matches_raw.csv"
 FILE_CLASSIFIER = "logistic_regression.pickle"

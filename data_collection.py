@@ -27,31 +27,19 @@ def get_stat(teams_stats, index):
 def get_match_data_as_dataframe(game):
     teams_stats = get_team_stats(game)
 
-    home, away = {}, {}
+    data = {}
 
-    game_id, _ = get_stat(teams_stats, const.INDEX_GAME_ID)
-    minutes, _ = get_stat(teams_stats, const.INDEX_MIN)
-    home["id"],   away["id"]   = get_stat(teams_stats, const.INDEX_TEAM_ID)
-    home["name"], away["name"] = get_stat(teams_stats, const.INDEX_TEAM_NAME)
-    home["pts"],  away["pts"]  = get_stat(teams_stats, const.INDEX_PTS)
-    home["fgm"],  away["fgm"]  = get_stat(teams_stats, const.INDEX_FGM)
-    home["fga"],  away["fga"]  = get_stat(teams_stats, const.INDEX_FGA)
-    home["fg3m"], away["fg3m"] = get_stat(teams_stats, const.INDEX_FG3M)
-    home["fg3a"], away["fg3a"] = get_stat(teams_stats, const.INDEX_FG3A)
-    home["ftm"],  away["ftm"]  = get_stat(teams_stats, const.INDEX_FTM)
-    home["fta"],  away["fta"]  = get_stat(teams_stats, const.INDEX_FTA)
-    home["oreb"], away["oreb"] = get_stat(teams_stats, const.INDEX_OREB)
-    home["dreb"], away["dreb"] = get_stat(teams_stats, const.INDEX_DREB)
-    home["reb"],  away["reb"]  = get_stat(teams_stats, const.INDEX_REB)
-    home["ast"],  away["ast"]  = get_stat(teams_stats, const.INDEX_AST)
-    home["stl"],  away["stl"]  = get_stat(teams_stats, const.INDEX_STL)
-    home["blk"],  away["blk"]  = get_stat(teams_stats, const.INDEX_BLK)
-    home["to"],   away["to"]   = get_stat(teams_stats, const.INDEX_TO)
-    home["pf"],   away["pf"]   = get_stat(teams_stats, const.INDEX_PF)
+    # retrive the value for the match attributes
+    data["game id"], _ = get_stat(teams_stats, const.INDEX_GAME_ID)
+    data["minutes"], _ = get_stat(teams_stats, const.INDEX_MIN)
+    # retrive the value of each attribute for the home and away team
+    for att_name, index in const.INDEXES_ATTRIBUTES.items():
+        att_name_home, att_name_away = f"home {att_name}", f"away {att_name}"
+        data[att_name_home], data[att_name_away] = get_stat(teams_stats, index)
 
-    match_data = [game_id, minutes, *home.values(), *away.values()]
+    data_values, data_names = data.values(), data.keys()
 
-    return pd.DataFrame([match_data], columns=const.MATCHES_PARAMETERS_RAW)
+    return pd.DataFrame([data_values], columns=data_names)
 
 
 def save_matches_timeline(filename):

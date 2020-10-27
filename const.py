@@ -3,26 +3,29 @@ FIRST_MATCHES = 200
 FIRST_YEAR, LAST_YEAR = 5, 19
 NUM_SEASONS = LAST_YEAR - FIRST_YEAR + 1
 
-INDEX_TEAM_STATS = 1
 INDEX_GAME_ID    = 0
-INDEX_TEAM_ID    = 1
-INDEX_TEAM_NAME  = 2
+INDEX_TEAM_STATS = 1
 INDEX_MIN        = 5
-INDEX_FGM        = 6
-INDEX_FGA        = 7
-INDEX_FG3M       = 9
-INDEX_FG3A       = 10
-INDEX_FTM        = 12
-INDEX_FTA        = 13
-INDEX_OREB       = 15
-INDEX_DREB       = 16
-INDEX_REB        = 17
-INDEX_AST        = 18
-INDEX_STL        = 19
-INDEX_BLK        = 20
-INDEX_TO         = 21
-INDEX_PF         = 22
-INDEX_PTS        = 23
+INDEXES_ATTRIBUTES = {
+    "id"  : 1,
+    "name": 2,
+    "fgm" : 6,
+    "fga" : 7,
+    "fg3m": 9,
+    "fg3a": 10,
+    "ftm" : 12,
+    "fta" : 13,
+    "oreb": 15,
+    "dreb": 16,
+    "reb" : 17,
+    "ast" : 18,
+    "stl" : 19,
+    "blk" : 20,
+    "to"  : 21,
+    "pf"  : 22,
+    "pts" : 23
+}
+
 
 MATCHES_PARAMETERS_RAW = ["game id",   "home id",  "home name", "home pts",
                           "home fgm",  "home fga", "home fg3m", "home fg3a",

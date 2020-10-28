@@ -48,7 +48,7 @@ def calculate_game_id(year: int, game_number: int) -> str:
     return "002" + str(year - 1).zfill(2) + str(game_number).zfill(5)
 
 
-def get_games_id(year: int) -> str:
+def generate_games_id(year: int) -> str:
     for game_number in range(1, const.NUM_GAMES + 1):
         yield calculate_game_id(year, game_number)
 

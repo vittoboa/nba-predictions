@@ -1,5 +1,5 @@
 import const
-from utils import save_dataframe_in_file, get_games_id
+from utils import save_dataframe_in_file, generate_games_id
 
 import json
 import pandas as pd
@@ -48,7 +48,7 @@ def save_matches_timeline(filename):
     matches_data = pd.DataFrame()
 
     for season in range(const.FIRST_YEAR, const.LAST_YEAR + 1):
-        for game_id in get_games_id(season):
+        for game_id in generate_games_id(season):
             game = get_game(game_id)
             if game is None:
                 break

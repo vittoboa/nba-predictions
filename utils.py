@@ -45,7 +45,7 @@ def save_dataframe_in_file(dataframe: pd.DataFrame, file_name: str) -> None:
 
 
 def calculate_game_id(year: int, game_number: int) -> str:
-    return "002" + str(year - 1).zfill(2) + str(game_number).zfill(5)
+    return f"002{str(year - 1).zfill(2)}{str(game_number).zfill(5)}"
 
 
 def generate_games_id(year: int) -> str:

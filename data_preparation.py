@@ -33,7 +33,7 @@ def processes_data(matches):
 
 
 def prepare_data():
-    matches = pd.read_csv(const.FILE_MATCHES_DATA_RAW)
+    matches = pd.read_csv(const.FILE_RAW)
 
     matches_processed = processes_data(matches)
     matches_processed.to_csv(const.FILE_PROCESSED, index=False)

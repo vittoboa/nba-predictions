@@ -88,9 +88,9 @@ def main():
     """ if a classifier has been saved retrive it, else create a new one """
     if not os.path.exists('./' + const.FILE_CLASSIFIER):
         # create a classifier
-        if not os.path.exists('./' + const.FILE_MATCHES_DATA):
+        if not os.path.exists('./' + const.FILE_RAW):
             # save matches timeline if doesn't exist
-            save_matches_timeline(const.FILE_MATCHES_DATA)
+            save_matches_timeline(const.FILE_RAW)
         save_classifier(const.FILE_CLASSIFIER)
     clf = retrive_classifier()
 

@@ -26,5 +26,8 @@ INDEXES_ATTRIBUTES = {
     "pts" : 23
 }
 
+IDENTIFIERS = ["game id", "home id", "away id"]
+
 FILE_MATCHES_DATA_RAW = "matches_raw.csv"
+FILE_PROCESSED  = "matches_processed.csv"
 FILE_CLASSIFIER = "logistic_regression.pickle"

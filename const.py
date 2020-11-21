@@ -27,7 +27,7 @@ INDEXES_ATTRIBUTES = {
     "pts" : 23
 }
 
-IDENTIFIERS = ["game id", "home id", "away id", "season"]
+IDENTIFIERS = ["game id", "home id", "away id", "season", "game num"]
 
 FILE_RAW = "matches_raw.csv"
 FILE_PROCESSED  = "matches_processed.csv"

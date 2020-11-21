@@ -41,6 +41,7 @@ def retrive_seasons(game_ids):
 def processes_data(matches):
     # add more identifying attributes
     matches["season"] = retrive_seasons(matches["game id"])
+    matches["game num"] = matches.groupby("season").cumcount()
 
     # adjust attributes per hour
     matches["minutes"] = matches["minutes"].map(remove_seconds)

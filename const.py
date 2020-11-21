@@ -2,6 +2,7 @@ NUM_GAMES = 1230
 FIRST_MATCHES = 200
 FIRST_YEAR, LAST_YEAR = 5, 19
 NUM_SEASONS = LAST_YEAR - FIRST_YEAR + 1
+SEASONS = list(range(FIRST_YEAR, LAST_YEAR + 1))
 
 INDEX_GAME_ID    = 0
 INDEX_TEAM_STATS = 1
@@ -26,7 +27,7 @@ INDEXES_ATTRIBUTES = {
     "pts" : 23
 }
 
-IDENTIFIERS = ["game id", "home id", "away id"]
+IDENTIFIERS = ["game id", "home id", "away id", "season"]
 
 FILE_RAW = "matches_raw.csv"
 FILE_PROCESSED  = "matches_processed.csv"

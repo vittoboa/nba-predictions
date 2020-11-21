@@ -36,6 +36,10 @@ def get_four_factors(four_factors: Dict[str, float], opnt_dreb: float) -> Dict[s
     return dict(zip(const.FOUR_FACTORS, four_factors))
 
 
+def add_trailing_zeros(num: int, n_zeros: int) -> int:
+    return int(f"{num}{'0' * n_zeros}")
+
+
 def get_avg(sum: int, n: int) -> float:
     return round(sum / n, 3)
 

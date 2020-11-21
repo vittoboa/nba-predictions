@@ -1,4 +1,5 @@
 import const
+from utils import add_trailing_zeros
 
 import pandas as pd
 import numpy as np
@@ -25,7 +26,23 @@ def adjust_per_hour(matches):
     return matches
 
 
+def retrive_seasons(game_ids):
+    # define the target seasons
+    seasons_threshold = list(range(const.FIRST_YEAR - 1, const.LAST_YEAR + 1))
+    # define the edges of the intervals used to segment the matches
+    matches_threshold = [add_trailing_zeros(season + 200, n_zeros=5) for season in seasons_threshold]
+
+    # assign to each match the corresponding season
+    seasons = pd.cut(game_ids, bins=matches_threshold, labels=const.SEASONS).astype("int8")
+
+    return seasons
+
+
 def processes_data(matches):
+    # add more identifying attributes
+    matches["season"] = retrive_seasons(matches["game id"])
+
+    # adjust attributes per hour
     matches["minutes"] = matches["minutes"].map(remove_seconds)
     matches = adjust_per_hour(matches)
 

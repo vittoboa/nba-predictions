@@ -27,6 +27,8 @@ INDEXES_ATTRIBUTES = {
     "pts" : 23
 }
 
+
+WIN_HOME, WIN_AWAY = 0, 1
 IDENTIFIERS = ["game id", "home id", "away id", "season", "game num"]
 
 FILE_RAW = "matches_raw.csv"

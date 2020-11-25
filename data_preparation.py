@@ -26,6 +26,20 @@ def adjust_per_hour(matches):
     return matches
 
 
+def add_winners(matches):
+    # determine in which matches the home team won
+    is_winner_home = matches["home pts"].values > matches["away pts"].values
+
+    # set 1 if the home team has won, otherwise 0
+    matches["home win"] = is_winner_home.astype("int8")
+    # set 1 if the home team has lost, otherwise 0
+    matches["away win"] = (~is_winner_home).astype("int8")
+    # set the win_home value where the home team has won, otherwise the win_away value
+    matches["winner"] = np.where(is_winner_home, const.WIN_HOME, const.WIN_AWAY)
+
+    return matches
+
+
 def retrive_seasons(game_ids):
     # define the target seasons
     seasons_threshold = list(range(const.FIRST_YEAR - 1, const.LAST_YEAR + 1))
@@ -46,6 +60,9 @@ def processes_data(matches):
     # adjust attributes per hour
     matches["minutes"] = matches["minutes"].map(remove_seconds)
     matches = adjust_per_hour(matches)
+
+    # add more attributes using existing data
+    matches = add_winners(matches)
 
     return matches
 

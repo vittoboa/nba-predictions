@@ -24,6 +24,14 @@ def calculate_free_thorows(ftm: float, fga: float) -> float:
     return ftm / fga
 
 
+def calculate_efficiency(pts: float, reb: float, ast: float, stl: float, blk: float,
+                         missed_fg: float, missed_ft: float, to: float) -> float:
+    """ Calculate team's efficiency.
+        Accounts for both offensive and defensive contributions """
+
+    return pts + reb + ast + stl + blk - missed_fg - missed_ft - to
+
+
 def get_four_factors(four_factors: Dict[str, float], opnt_dreb: float) -> Dict[str, float]:
     ff = four_factors
 

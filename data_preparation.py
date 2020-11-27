@@ -1,8 +1,37 @@
 import const
-from utils import add_trailing_zeros
+from utils import add_trailing_zeros, calculate_efficiency
 
 import pandas as pd
 import numpy as np
+
+
+def add_efficiency(matches):
+    # retrive the required data to calculate team's efficiency
+    target_atts = ["pts", "reb", "ast", "stl", "blk", "fga", "fgm", "fta", "ftm", "to"]
+    home_values, away_values = {}, {}
+    for att in target_atts:
+        home_value, away_value = matches[[f"home {att}", f"away {att}"]].values.T
+        home_values[att] = home_value
+        away_values[att] = away_value
+
+    # calculate missed shots
+    home_missed_fg = home_values["fga"] - home_values["fgm"]
+    away_missed_fg = away_values["fga"] - away_values["fgm"]
+    home_missed_ft = home_values["fta"] - home_values["ftm"]
+    away_missed_ft = away_values["fta"] - away_values["ftm"]
+
+    # calculate efficiency
+    home_eff = calculate_efficiency(
+        home_values["pts"], home_values["reb"], home_values["ast"], home_values["stl"],
+        home_values["blk"], home_missed_fg, home_missed_ft, home_values["to"])
+    away_eff = calculate_efficiency(
+        away_values["pts"], away_values["reb"], away_values["ast"], away_values["stl"],
+        away_values["blk"], away_missed_fg, away_missed_ft, away_values["to"])
+
+    matches["home eff"] = home_eff
+    matches["away eff"] = away_eff
+
+    return matches
 
 
 def remove_seconds(time):
@@ -63,6 +92,7 @@ def processes_data(matches):
 
     # add more attributes using existing data
     matches = add_winners(matches)
+    matches = add_efficiency(matches)
 
     return matches
 

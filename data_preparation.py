@@ -102,6 +102,3 @@ def prepare_data():
 
     matches_processed = processes_data(matches)
     matches_processed.to_csv(const.FILE_PROCESSED, index=False)
-
-
-prepare_data()

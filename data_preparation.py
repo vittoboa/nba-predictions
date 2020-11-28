@@ -1,5 +1,5 @@
 import const
-from utils import add_trailing_zeros, calculate_efficiency
+import utils
 
 import pandas as pd
 import numpy as np
@@ -21,10 +21,10 @@ def add_efficiency(matches):
     away_missed_ft = away_values["fta"] - away_values["ftm"]
 
     # calculate efficiency
-    home_eff = calculate_efficiency(
+    home_eff = utils.calculate_efficiency(
         home_values["pts"], home_values["reb"], home_values["ast"], home_values["stl"],
         home_values["blk"], home_missed_fg, home_missed_ft, home_values["to"])
-    away_eff = calculate_efficiency(
+    away_eff = utils.calculate_efficiency(
         away_values["pts"], away_values["reb"], away_values["ast"], away_values["stl"],
         away_values["blk"], away_missed_fg, away_missed_ft, away_values["to"])
 
@@ -73,7 +73,7 @@ def retrive_seasons(game_ids):
     # define the target seasons
     seasons_threshold = list(range(const.FIRST_YEAR - 1, const.LAST_YEAR + 1))
     # define the edges of the intervals used to segment the matches
-    matches_threshold = [add_trailing_zeros(season + 200, n_zeros=5) for season in seasons_threshold]
+    matches_threshold = [utils.add_trailing_zeros(season + 200, n_zeros=5) for season in seasons_threshold]
 
     # assign to each match the corresponding season
     seasons = pd.cut(game_ids, bins=matches_threshold, labels=const.SEASONS).astype("int8")
@@ -102,3 +102,6 @@ def prepare_data():
 
     matches_processed = processes_data(matches)
     matches_processed.to_csv(const.FILE_PROCESSED, index=False)
+
+
+prepare_data()

@@ -32,6 +32,13 @@ def calculate_efficiency(pts: float, reb: float, ast: float, stl: float, blk: fl
     return pts + reb + ast + stl + blk - missed_fg - missed_ft - to
 
 
+def calculate_pir(pts: float, reb: float, ast: float, stl: float, blk: float, pf_opt: float,
+                  fg_missed: float, ft_missed: float, to: float, blk_opt: float, pf: float) -> float:
+    """ Calculate team's Performance Index Rating. """
+
+    return (pts + reb + ast + stl + blk + pf_opt) - (fg_missed + ft_missed + to + blk_opt + pf)
+
+
 def get_four_factors(four_factors: Dict[str, float], opnt_dreb: float) -> Dict[str, float]:
     ff = four_factors
 

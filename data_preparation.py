@@ -34,6 +34,37 @@ def add_efficiency(matches):
     return matches
 
 
+def add_pir(matches):
+    # retrive the required data to calculate team's Performance Index Rating
+    target_atts = ["pts", "reb", "ast", "stl", "blk", "fga", "fgm", "fta", "ftm", "to", "pf"]
+    home_values, away_values = {}, {}
+    for att in target_atts:
+        home_value, away_value = matches[[f"home {att}", f"away {att}"]].values.T
+        home_values[att] = home_value
+        away_values[att] = away_value
+
+    # calculate missed shots
+    home_missed_fg = home_values["fga"] - home_values["fgm"]
+    away_missed_fg = away_values["fga"] - away_values["fgm"]
+    home_missed_ft = home_values["fta"] - home_values["ftm"]
+    away_missed_ft = away_values["fta"] - away_values["ftm"]
+
+    # calculate pir
+    home_pir = utils.calculate_pir(
+        home_values["pts"], home_values["reb"], home_values["ast"], home_values["stl"],
+        home_values["blk"], away_values["pf"], home_missed_fg, home_missed_ft,
+        home_values["to"], away_values["blk"], home_values["pf"])
+    away_pir = utils.calculate_pir(
+        away_values["pts"], away_values["reb"], away_values["ast"], away_values["stl"],
+        away_values["blk"], home_values["pf"], away_missed_fg, away_missed_ft,
+        away_values["to"], home_values["blk"], away_values["pf"])
+
+    matches["home pir"] = home_pir
+    matches["away pir"] = away_pir
+
+    return matches
+
+
 def remove_seconds(time):
     minutes, _ = time.split(":")
     return minutes
@@ -93,6 +124,7 @@ def processes_data(matches):
     # add more attributes using existing data
     matches = add_winners(matches)
     matches = add_efficiency(matches)
+    matches = add_pir(matches)
 
     return matches
 

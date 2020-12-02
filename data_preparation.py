@@ -100,6 +100,18 @@ def add_winners(matches):
     return matches
 
 
+def add_eft_pct(matches):
+    # retrive the required data to calculate team's EFT percentage
+    home_fga,  away_fga  = matches[["home fga", "away fga"]].values.T
+    home_fgm,  away_fgm  = matches[["home fgm", "away fgm"]].values.T
+    home_fg3m, away_fg3m = matches[["home fg3m", "away fg3m"]].values.T
+
+    matches["home eft pct"] = utils.calculate_eft_pct(home_fgm, home_fg3m, home_fga)
+    matches["away eft pct"] = utils.calculate_eft_pct(away_fgm, away_fg3m, away_fga)
+
+    return matches
+
+
 def retrive_seasons(game_ids):
     # define the target seasons
     seasons_threshold = list(range(const.FIRST_YEAR - 1, const.LAST_YEAR + 1))
@@ -125,6 +137,7 @@ def processes_data(matches):
     matches = add_winners(matches)
     matches = add_efficiency(matches)
     matches = add_pir(matches)
+    matches = add_eft_pct(matches)
 
     return matches
 

@@ -24,6 +24,15 @@ def calculate_free_thorows(ftm: float, fga: float) -> float:
     return ftm / fga
 
 
+def calculate_eft_pct(fgm: float, fg3m: float, fga: float) -> float:
+    """ Team's effective technical shooting percentage.
+        Adjusts field goal percentage
+        to account for the fact that three-point field goals count for three points
+        while field goals only count for two points. """
+
+    return (fgm + (0.5 * fg3m)) / fga
+
+
 def calculate_efficiency(pts: float, reb: float, ast: float, stl: float, blk: float,
                          missed_fg: float, missed_ft: float, to: float) -> float:
     """ Calculate team's efficiency.

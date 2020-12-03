@@ -24,6 +24,13 @@ def calculate_free_thorows(ftm: float, fga: float) -> float:
     return ftm / fga
 
 
+def calculate_ts_pct(pts: float, fga: float, fta: float) -> float:
+    """ Team's true shooting percentage.
+        Measures the players efficiency at shooting the ball """
+
+    return pts / (2 * (fga + (0.44 * fta)))
+
+
 def calculate_eft_pct(fgm: float, fg3m: float, fga: float) -> float:
     """ Team's effective technical shooting percentage.
         Adjusts field goal percentage

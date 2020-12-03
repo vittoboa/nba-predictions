@@ -112,6 +112,18 @@ def add_eft_pct(matches):
     return matches
 
 
+def add_ts_pct(matches):
+    # retrive the required data to calculate team's true shooting percentage
+    home_pts, away_pts = matches[["home pts", "away pts"]].values.T
+    home_fga, away_fga = matches[["home fga", "away fga"]].values.T
+    home_fta, away_fta = matches[["home fta", "away fta"]].values.T
+
+    matches["home ts pct"] = utils.calculate_ts_pct(home_pts, home_fga, home_fta)
+    matches["away ts pct"] = utils.calculate_ts_pct(away_pts, away_fga, away_fta)
+
+    return matches
+
+
 def retrive_seasons(game_ids):
     # define the target seasons
     seasons_threshold = list(range(const.FIRST_YEAR - 1, const.LAST_YEAR + 1))
@@ -138,6 +150,7 @@ def processes_data(matches):
     matches = add_efficiency(matches)
     matches = add_pir(matches)
     matches = add_eft_pct(matches)
+    matches = add_ts_pct(matches)
 
     return matches
 

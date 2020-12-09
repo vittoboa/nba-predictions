@@ -40,6 +40,21 @@ def calculate_eft_pct(fgm: float, fg3m: float, fga: float) -> float:
     return (fgm + (0.5 * fg3m)) / fga
 
 
+def calculate_possesions(fga: float, orb: float, to: float, fta: float) -> float:
+    """ Estimate team's possessions """
+
+    return 0.96 * (fga - orb + to + (0.44 * fta))
+
+
+def calculate_rating(pts: float, possessions: float) -> float:
+    """ Calculate defensive and offensive rating.
+        Measure offensive or defensive performance.
+        For offensive rating use team's points, and
+        for defensive rating use opponent's points. """
+
+    return (pts * 100) / possessions
+
+
 def calculate_efficiency(pts: float, reb: float, ast: float, stl: float, blk: float,
                          missed_fg: float, missed_ft: float, to: float) -> float:
     """ Calculate team's efficiency.

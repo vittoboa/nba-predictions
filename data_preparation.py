@@ -100,6 +100,31 @@ def add_winners(matches):
     return matches
 
 
+def add_ratings(matches):
+    # retrive the required data to calculate team's ratings
+    home_orb, away_orb = matches[["home oreb", "away oreb"]].values.T
+    home_pts, away_pts = matches[["home pts", "away pts"]].values.T
+    home_fga, away_fga = matches[["home fga", "away fga"]].values.T
+    home_fta, away_fta = matches[["home fta", "away fta"]].values.T
+    home_to,  away_to  = matches[["home to", "away to"]].values.T
+
+    # calculate remaining required data to calculate team's ratings
+    home_possessions = utils.calculate_possesions(home_fga, home_orb, home_to, home_fta)
+    away_possessions = utils.calculate_possesions(away_fga, away_orb, away_to, away_fta)
+
+    home_off_rating = utils.calculate_rating(home_pts, home_possessions)
+    home_def_rating = utils.calculate_rating(away_pts, home_possessions)
+    away_off_rating = utils.calculate_rating(away_pts, away_possessions)
+    away_def_rating = utils.calculate_rating(home_pts, away_possessions)
+
+    matches["home off rating"] = home_off_rating
+    matches["home def rating"] = home_def_rating
+    matches["away off rating"] = away_off_rating
+    matches["away def rating"] = away_def_rating
+
+    return matches
+
+
 def add_eft_pct(matches):
     # retrive the required data to calculate team's EFT percentage
     home_fga,  away_fga  = matches[["home fga", "away fga"]].values.T
@@ -150,6 +175,7 @@ def processes_data(matches):
     matches = add_winners(matches)
     matches = add_efficiency(matches)
     matches = add_pir(matches)
+    matches = add_ratings(matches)
     matches = add_eft_pct(matches)
     matches = add_ts_pct(matches)
 

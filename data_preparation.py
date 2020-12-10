@@ -179,6 +179,8 @@ def processes_data(matches):
     matches = add_eft_pct(matches)
     matches = add_ts_pct(matches)
 
+    matches = matches.dropna()
+
     return matches
 
 

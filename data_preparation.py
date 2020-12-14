@@ -3,6 +3,7 @@ import utils
 
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import QuantileTransformer
 
 
 def add_efficiency(matches):
@@ -161,6 +162,23 @@ def retrive_seasons(game_ids):
     return seasons
 
 
+def uniform_by_season(matches):
+    # select non-identifying numerical attributes
+    target_atts = matches.select_dtypes([np.number]).drop(columns=const.IDENTIFIERS).columns
+
+    # transform the target features to follow a uniform distribution
+    for season, season_matches in matches.groupby("season"):
+        # define conditions on matches
+        n_matches = len(season_matches.index)
+        target_matches = season_matches[target_atts]
+        target_season = matches["season"].values == season
+
+        uniformed_matches = QuantileTransformer(n_quantiles=n_matches).fit_transform(target_matches)
+        matches.loc[target_season, target_atts] = uniformed_matches
+
+    return matches
+
+
 def processes_data(matches):
     # add more identifying attributes
     matches["season"] = retrive_seasons(matches["game id"])
@@ -180,6 +198,7 @@ def processes_data(matches):
     matches = add_ts_pct(matches)
 
     matches = matches.dropna()
+    matches = uniform_by_season(matches)
 
     return matches
 

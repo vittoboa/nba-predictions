@@ -30,6 +30,21 @@ INDEXES_ATTRIBUTES = {
 
 WIN_HOME, WIN_AWAY = 0, 1
 IDENTIFIERS = ["game id", "home id", "away id", "season", "game num"]
+FIELDS = ["home", "away"]
+
+
+""" for data processing """
+# ATOMIC ATTRIBUTES
+ATT_ATOMIC = ["pts", "fgm", "ftm", "fg3m", "eff", "pir", "win",
+              "off rating", "def rating", "eft pct", "ts pct", "salary"]
+ATT_MAIN = [f"{field} {att}" for att in ATT_ATOMIC for field in FIELDS]
+
+# DIFFERENCES ATTRIBUTES
+ATT_FOR_DIFF = ATT_MAIN
+ATT_FOR_DIFF_HOME, ATT_FOR_DIFF_AWAY = ATT_FOR_DIFF[0::2], ATT_FOR_DIFF[1::2]
+ATT_DIFF = [f"{att} diff" for att in ATT_FOR_DIFF]
+ATT_DIFF_HOME, ATT_DIFF_AWAY = ATT_DIFF[0::2], ATT_DIFF[1::2]
+
 
 FILE_RAW = "matches_raw.csv"
 FILE_PROCESSED  = "matches_processed.csv"

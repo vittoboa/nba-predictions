@@ -101,6 +101,17 @@ def add_winners(matches):
     return matches
 
 
+def add_differences_home_away(matches):
+    home_values = matches[const.ATT_FOR_DIFF_HOME].values
+    away_values = matches[const.ATT_FOR_DIFF_AWAY].values
+
+    # calculate the difference between the values of the team and the opponent
+    matches[const.ATT_DIFF_HOME] = home_values - away_values
+    matches[const.ATT_DIFF_AWAY] = away_values - home_values
+
+    return matches
+
+
 def add_ratings(matches):
     # retrive the required data to calculate team's ratings
     home_orb, away_orb = matches[["home oreb", "away oreb"]].values.T
@@ -196,6 +207,7 @@ def processes_data(matches):
     matches = add_ratings(matches)
     matches = add_eft_pct(matches)
     matches = add_ts_pct(matches)
+    matches = add_differences_home_away(matches)
 
     matches = matches.dropna()
     matches = uniform_by_season(matches)

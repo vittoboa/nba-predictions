@@ -87,6 +87,15 @@ def adjust_per_hour(matches):
     return matches
 
 
+def add_percentages(matches):
+    vals = matches[const.ATT_FOR_PERCENTAGE].values
+    tot  = matches[const.ATT_FOR_PERCENTAGE.values()].values
+
+    matches[const.ATT_PCT] = vals / tot * 100
+
+    return matches
+
+
 def add_winners(matches):
     # determine in which matches the home team won
     is_winner_home = matches["home pts"].values > matches["away pts"].values
@@ -207,6 +216,7 @@ def processes_data(matches):
     matches = add_ratings(matches)
     matches = add_eft_pct(matches)
     matches = add_ts_pct(matches)
+    matches = add_percentages(matches)
     matches = add_differences_home_away(matches)
 
     matches = matches.dropna()

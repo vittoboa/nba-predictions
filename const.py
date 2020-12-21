@@ -39,8 +39,17 @@ ATT_ATOMIC = ["pts", "fgm", "ftm", "fg3m", "eff", "pir", "win",
               "off rating", "def rating", "eft pct", "ts pct", "salary"]
 ATT_MAIN = [f"{field} {att}" for att in ATT_ATOMIC for field in FIELDS]
 
+# PERCENTAGES ATTRIBUTES
+#                           {value_attribute: tot_attribute}
+ATT_FOR_PERCENTAGE_ATOMIC = {"fgm": "fga", "ftm": "fta", "fg3m": "fg3a"}
+ATT_FOR_PERCENTAGE = {f"{field} {att_val}": f"{field} {att_tot}"
+                      for att_val, att_tot in ATT_FOR_PERCENTAGE_ATOMIC.items()
+                      for field in FIELDS}
+ATT_PCT = [f"{field} {att} pct"
+           for att in ATT_FOR_PERCENTAGE_ATOMIC for field in FIELDS]
+
 # DIFFERENCES ATTRIBUTES
-ATT_FOR_DIFF = ATT_MAIN
+ATT_FOR_DIFF = [*ATT_MAIN, *ATT_PCT]
 ATT_FOR_DIFF_HOME, ATT_FOR_DIFF_AWAY = ATT_FOR_DIFF[0::2], ATT_FOR_DIFF[1::2]
 ATT_DIFF = [f"{att} diff" for att in ATT_FOR_DIFF]
 ATT_DIFF_HOME, ATT_DIFF_AWAY = ATT_DIFF[0::2], ATT_DIFF[1::2]

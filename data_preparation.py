@@ -222,7 +222,7 @@ def processes_data(matches):
     matches = matches.dropna()
     matches = uniform_by_season(matches)
 
-    return matches
+    return matches[[const.TARGET, *const.IDENTIFIERS, *const.ATT_PROCESSED]]
 
 
 def prepare_data():

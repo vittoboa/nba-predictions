@@ -225,8 +225,34 @@ def processes_data(matches):
     return matches[[const.TARGET, *const.IDENTIFIERS, *const.ATT_PROCESSED]]
 
 
+def initialize_columns(matches):
+    # add all new columns
+    matches = matches.reindex(columns=[*const.ATT_AGGREGATED, *matches.columns])
+
+    # determine the datatypes for all columns
+    col_floats = [col for col in matches.columns if matches[col].dtype == "float64"]
+    floats   = {col: "float32" for col in col_floats}
+    integers = {"winner":  "int8", "home win": "int8", "away win": "int8",
+                "game num": "int16",
+                "game id": "int32", "home id": "int32",  "away id": "int32"}
+
+    columns_types = {**floats, **integers}
+    matches = matches.astype(columns_types)
+
+    return matches
+
+
+def aggregate_data(matches):
+    matches = initialize_columns(matches)
+
+    return matches
+
+
 def prepare_data():
     matches = pd.read_csv(const.FILE_RAW)
 
     matches_processed = processes_data(matches)
     matches_processed.to_csv(const.FILE_PROCESSED, index=False)
+
+    matches_aggregated = aggregate_data(matches_processed)
+    matches_aggregated.to_csv(const.FILE_AGGREGATED, index=False)

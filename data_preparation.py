@@ -199,6 +199,78 @@ def uniform_by_season(matches):
     return matches
 
 
+def retrive_matches(matches, team_id, season, last_match=None, columns=None):
+    is_current_season = matches["season"].values == season
+
+    # if no last_match is given, consider all matches of the season
+    if last_match is None:
+        last_match = matches.loc[is_current_season, "game num"].iloc[-1] + 1
+
+    # if no columns are specified, consider all columns
+    if columns is None:
+        columns = matches.columns
+
+    # define match conditions
+    is_past_game    = matches["game num"].values < last_match
+    is_target_match = is_current_season & is_past_game
+    # define team conditions
+    is_playing_home = matches["home id"].values == team_id
+    is_playing_away = matches["away id"].values == team_id
+
+    cols_home = [col for col in columns if "away" not in col]
+    cols_away = [col for col in columns if "home" not in col]
+    matches_home = matches.loc[is_target_match & is_playing_home, cols_home]
+    matches_away = matches.loc[is_target_match & is_playing_away, cols_away]
+
+    team_matches = pd.concat([matches_home, matches_away])
+    # sort matches in chronological order
+    team_matches = team_matches.sort_index()
+
+    return team_matches
+
+
+def add_rest_days(matches):
+    teams_ids = np.unique(matches[["home id", "away id"]])
+
+    for season in const.SEASONS:
+        for team_id in teams_ids:
+            season_matches = retrive_matches(matches, team_id, season)
+
+            if season_matches.empty:
+                continue
+
+            # the first match doesn't have any previous match
+            indexes_matches = season_matches.index[1:]
+            target_matches  = season_matches.loc[indexes_matches, "date"]
+            # the last match can't be a previous match
+            indexes_matches_previous = season_matches.index[:-1]
+            target_matches_previous  = season_matches.loc[indexes_matches_previous, "date"]
+
+            days_diff = target_matches.sub(target_matches_previous.values)
+            days_rest = days_diff.dt.days - 1
+            # set arbitrary number of rest days for the first match of the season
+            days_rest[season_matches.index[0]] = const.DEFAULT_REST_DAYS
+
+            # define match conditons
+            is_playing_home = season_matches["home id"].values == team_id
+            is_playing_away = season_matches["away id"].values == team_id
+            indexes_playing_home = season_matches[is_playing_home].index
+            indexes_playing_away = season_matches[is_playing_away].index
+
+            days_rest_home = days_rest[indexes_playing_home].values
+            days_rest_away = days_rest[indexes_playing_away].values
+            matches.loc[indexes_playing_home, "home num rest days"] = days_rest_home
+            matches.loc[indexes_playing_away, "away num rest days"] = days_rest_away
+
+    # reduce large number of rest days to the default value
+    has_many_rest_days = matches[["home num rest days", "away num rest days"]].values > const.DEFAULT_REST_DAYS
+    has_many_rest_days_home, has_many_rest_days_away = has_many_rest_days.T
+    matches.loc[has_many_rest_days_home, "home num rest days"] = const.DEFAULT_REST_DAYS
+    matches.loc[has_many_rest_days_away, "away num rest days"] = const.DEFAULT_REST_DAYS
+
+    return matches
+
+
 def processes_data(matches):
     # add more identifying attributes
     matches["season"] = retrive_seasons(matches["game id"])
@@ -219,6 +291,8 @@ def processes_data(matches):
     matches = add_eft_pct(matches)
     matches = add_ts_pct(matches)
     matches = add_percentages(matches)
+    matches = add_rest_days(matches)
+
     matches = add_differences_home_away(matches)
 
     matches = matches.dropna()
@@ -251,7 +325,7 @@ def aggregate_data(matches):
 
 
 def prepare_data():
-    matches = pd.read_csv(const.FILE_RAW)
+    matches = pd.read_csv(const.FILE_RAW, parse_dates=["date"])
 
     matches_processed = processes_data(matches)
     matches_processed.to_csv(const.FILE_PROCESSED, index=False)

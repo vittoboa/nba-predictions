@@ -207,6 +207,8 @@ def processes_data(matches):
     # adjust attributes per hour
     matches["minutes"] = matches["minutes"].map(remove_seconds)
     matches = adjust_per_hour(matches)
+    mask_valid_matches = matches["minutes"].values > const.MATCH_MINUTES_THRESHOLD
+    matches = matches[mask_valid_matches]
     matches = matches.drop(columns="minutes")
 
     # add more attributes using existing data
